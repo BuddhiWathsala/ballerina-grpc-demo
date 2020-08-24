@@ -13,13 +13,3 @@ jobs:
               with:
                 args:
                   build -a
-
-    windows-build:
-        runs-on: windows-latest
-        steps:
-            - uses: actions/checkout@v2
-            - name: Ballerina build with tests
-              uses: ballerina-platform/ballerina-action/@swan-lake-release
-              with:
-                args:
-                  build -a
