@@ -1,13 +1,28 @@
 import ballerina/grpc;
+import ballerina/log;
 
 listener grpc:Listener ep = new (9090);
 
 service TravelGuide on ep {
 
     resource function GetFinalDestination(grpc:Caller caller) {
-        // Implementation goes here.
+        log:printInfo("Invoke GetFinalDestination Service. ");
 
-        // You should return a Location
+        Location finalDestination = {
+            name: "Colombo",
+            latitude: 85,
+            longitude: 100
+        };
+        
+        grpc:Error? err = caller->send(finalDestination);
+        if (err is grpc:Error) {
+            log:printError("Error from Connector: " + err.message());
+        }
+
+        grpc:Error? result = caller->complete();
+        if (result is grpc:Error) {
+            log:printError("Error in sending completed notification to caller", err = result);
+        }
     }
 }
 
