@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+service TravelGuide {
+    rpc SendRoute(stream Location) returns (google.protobuf.Empty);
+}
+
+message Location {
+    string name = 1;
+    int32 latitude = 2;
+    int32 longitude = 3;
+}
