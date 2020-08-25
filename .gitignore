@@ -3,3 +3,4 @@ target
 .keep
 .balo
 .jar
+*.log
