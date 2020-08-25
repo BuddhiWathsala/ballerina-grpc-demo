@@ -1,0 +1,1 @@
+{"buddhi/unary_client:0.1.0:TravelGuideBlockingClient" : [{"function":{"name":"GetFinalDestination","requiredParams":[{"headers":"ballerina/grpc:0.7.0:Headers?"}],"returnType":"[buddhi/unary_client:0.1.0:Location,ballerina/grpc:0.7.0:Headers]"}}]}
