@@ -1,21 +1,38 @@
 import ballerina/grpc;
+import ballerina/log;
 
-public type CabServiceClient client object {
+listener grpc:Listener ep = new (9092);
 
-    *grpc:AbstractClientEndpoint;
+service CabService on ep {
 
-    private grpc:Client grpcClient;
+    resource function sendCurrentLocation(grpc:Caller caller, stream<Location,error> clientStream) {
+        log:printInfo("Start receiving client location...");
 
-    public function init(string url, grpc:ClientConfiguration? config = ()) {
-        // initialize client endpoint.
-        self.grpcClient = new(url, config);
-        checkpanic self.grpcClient.initStub(self, "non-blocking", ROOT_DESCRIPTOR, getDescriptorMap());
+        error? e = clientStream.forEach(function(Location location) {
+            log:printInfo("Traced location: " + location.name);
+        });
+
+        if (e is grpc:EOS) {
+            TripState state = {
+                state: STATE_COMPLETED
+            };
+            grpc:Error? err = caller->send(state);
+            if (err is grpc:Error) {
+                log:printError("Error from Connector: " + err.message());
+            }
+
+            grpc:Error? result = caller->complete();
+            if (result is grpc:Error) {
+                log:printError("Error in sending completed notification to caller", err = result);
+            } else {
+                log:printInfo("Receiving completed");
+            }
+
+        } else if (e is error) {
+            log:printError("Error from Connector: " + e.message());
+        }
     }
-
-    public remote function sendCurrentLocation(service msgListener, grpc:Headers? headers = ()) returns (grpc:StreamingClient|grpc:Error) {
-        return self.grpcClient->streamingExecute("CabService/sendCurrentLocation", msgListener, headers);
-    }
-};
+}
 
 public type TripState record {|
     State? state = ();
@@ -25,7 +42,6 @@ public type TripState record {|
 public type State "COMPLETED"|"IN_PROGRESS";
 public const State STATE_COMPLETED = "COMPLETED";
 const State STATE_IN_PROGRESS = "IN_PROGRESS";
-
 
 public type Location record {|
     string name = "";

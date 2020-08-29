@@ -11,8 +11,9 @@ message Location {
 }
 
 message TripState {
-    enum state {
+    enum State {
         COMPLETED = 0;
         IN_PROGRESS = 1;
     }
+    State state = 1;
 }

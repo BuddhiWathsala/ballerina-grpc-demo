@@ -4,10 +4,10 @@ import ballerina/io;
 boolean isCompleted = false;
 public function main (string... args) {
 
-    TravelGuideClient endpoint = new("http://localhost:9092");
+    CabServiceClient endpoint = new("http://localhost:9092");
 
     grpc:StreamingClient streamingClient;
-    var res = endpoint->SendRoute(TravelGuideMessageListener);
+    var res = endpoint->sendCurrentLocation(CabServiceMessageListener);
 
     if (res is grpc:Error) {
         io:println("Error from Connector: " + res.message());
@@ -18,16 +18,16 @@ public function main (string... args) {
     }
     
     Location[] route = [
-        {name: "London", latitude: 88, longitude: 100},
-        {name: "Tokyo", latitude: 78, longitude: 82},
-        {name: "Sydney", latitude: 40, longitude: 62}
-    ];
+            {name: "Palace Hotel", latitude: 82, longitude: 90},
+            {name: "City College", latitude: 71, longitude: 82},
+            {name: "VSA Market", latitude: 70, longitude: 62}
+        ];
     foreach Location location in route {
         grpc:Error? connErr = streamingClient->send(location);
         if (connErr is grpc:Error) {
             io:println("Error from Connector: " + connErr.message());
         } else {
-            io:println("Send location: " + location.name);
+            io:println("Sent location: " + location.name);
         }
     }
 
@@ -41,7 +41,7 @@ public function main (string... args) {
 
 }
 
-service TravelGuideMessageListener = service {
+service CabServiceMessageListener = service {
 
     resource function onMessage(Location location) {
         isCompleted = true;
@@ -54,7 +54,7 @@ service TravelGuideMessageListener = service {
 
     resource function onComplete() {
         isCompleted = true;
-        io:println("Server Complete Sending Responses.");
+        io:println("Server completed sending responses.");
     }
 };
 
