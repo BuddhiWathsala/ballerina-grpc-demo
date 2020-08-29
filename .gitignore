@@ -1,6 +1,6 @@
 target
 *.lock
-.keep
 .balo
 .jar
 *.log
+backup/

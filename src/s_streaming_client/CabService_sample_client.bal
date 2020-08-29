@@ -2,10 +2,14 @@ import ballerina/grpc;
 import ballerina/io;
 
 boolean isCompleted = false;
-public function main (string... args) {
+public function main(string... args) {
 
-    TravelGuideClient ep = new("http://localhost:9091");
-    grpc:Error? result = ep->GetRoute(TravelGuideMessageListener);
+    CabServiceClient ep = new ("http://localhost:9091");
+
+    CabDetails cab = {
+        cabNumber: "AB002"
+    };
+    grpc:Error? result = ep->getCurrentLocation(cab, CabServiceMessageListener);
     if (result is grpc:Error) {
         io:println("Error from Connector: " + result.message());
     } else {
@@ -14,9 +18,10 @@ public function main (string... args) {
 
     while (!isCompleted) {}
     io:println("Client got response successfully.");
+
 }
 
-service TravelGuideMessageListener = service {
+service CabServiceMessageListener = service {
 
     resource function onMessage(Location location) {
         io:println("Response received from server: " + location.name);

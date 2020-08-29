@@ -1,11 +1,15 @@
 import ballerina/grpc;
-import ballerina/log;
 import ballerina/io;
+import ballerina/log;
 
-public function main (string... args) {
-    TravelGuideBlockingClient blockingEp = new("http://localhost:9090");
+public function main(string... args) {
 
-    var response = blockingEp->GetFinalDestination();
+    CabServiceBlockingClient blockingEp = new ("http://localhost:9090");
+
+    CabDetails cab = {
+        cabNumber: "AB002"
+    };
+    var response = blockingEp->getStartLocation(cab);
     if (response is grpc:Error) {
         log:printInfo("Error from Connector: " + response.message());
     } else {
