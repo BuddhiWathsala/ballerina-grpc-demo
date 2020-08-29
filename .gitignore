@@ -3,3 +3,4 @@ target
 .balo
 .jar
 *.log
+backup/
