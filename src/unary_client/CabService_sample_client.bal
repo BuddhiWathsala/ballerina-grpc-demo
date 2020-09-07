@@ -13,11 +13,7 @@ public function main(string... args) {
     if (response is grpc:Error) {
         log:printInfo("Error from Connector: " + response.message());
     } else {
-        Location result;
-        grpc:Headers resHeaders;
-        [result, resHeaders] = response;
-        io:println("Client Got Response : ");
-        io:println(result);
+        io:println(response);
     }
 }
 

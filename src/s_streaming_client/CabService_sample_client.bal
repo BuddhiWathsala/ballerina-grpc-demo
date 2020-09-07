@@ -1,7 +1,6 @@
 import ballerina/grpc;
 import ballerina/io;
 
-boolean isCompleted = false;
 public function main(string... args) {
 
     CabServiceClient ep = new ("http://localhost:9091");
@@ -16,9 +15,6 @@ public function main(string... args) {
         io:println("Connected successfully");
     }
 
-    while (!isCompleted) {}
-    io:println("Client got response successfully.");
-
 }
 
 service CabServiceMessageListener = service {
@@ -32,7 +28,6 @@ service CabServiceMessageListener = service {
     }
 
     resource function onComplete() {
-        isCompleted = true;
         io:println("Server Complete Sending Responses.");
     }
 };

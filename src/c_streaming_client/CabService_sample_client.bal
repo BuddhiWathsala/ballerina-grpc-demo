@@ -1,7 +1,6 @@
 import ballerina/grpc;
 import ballerina/io;
 
-boolean isCompleted = false;
 public function main (string... args) {
 
     CabServiceClient endpoint = new("http://localhost:9092");
@@ -36,15 +35,11 @@ public function main (string... args) {
         io:println("Error in sending complete message", result);
     }
 
-    while (!isCompleted) {}
-    io:println("Completed successfully");
-
 }
 
 service CabServiceMessageListener = service {
 
     resource function onMessage(Location location) {
-        isCompleted = true;
         io:println("Response received from server: " + location.name);
     }
 
@@ -53,7 +48,6 @@ service CabServiceMessageListener = service {
     }
 
     resource function onComplete() {
-        isCompleted = true;
         io:println("Server completed sending responses.");
     }
 };
