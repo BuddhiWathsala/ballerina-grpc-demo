@@ -1,5 +1,5 @@
 import ballerina/grpc;
-import ballerina/io;
+import ballerina/log;
 
 public function main (string... args) {
 
@@ -9,10 +9,10 @@ public function main (string... args) {
     var res = endpoint->sendCurrentLocation(CabServiceMessageListener);
 
     if (res is grpc:Error) {
-        io:println("Error from Connector: " + res.message());
+        log:printError("Error from Connector: " + res.message());
         return;
     } else {
-        io:println("Initialized connection sucessfully.");
+        log:printInfo("Initialized connection sucessfully.");
         streamingClient = res;
     }
     
@@ -24,15 +24,15 @@ public function main (string... args) {
     foreach Location location in route {
         grpc:Error? connErr = streamingClient->send(location);
         if (connErr is grpc:Error) {
-            io:println("Error from Connector: " + connErr.message());
+            log:printError("Error from Connector: " + connErr.message());
         } else {
-            io:println("Sent location: " + location.name);
+            log:printInfo("Sent location: " + location.name);
         }
     }
 
     grpc:Error? result = streamingClient->complete();
     if (result is grpc:Error) {
-        io:println("Error in sending complete message", result);
+        log:printError("Error in sending complete message", result);
     }
 
 }
@@ -40,15 +40,15 @@ public function main (string... args) {
 service CabServiceMessageListener = service {
 
     resource function onMessage(Location location) {
-        io:println("Response received from server: " + location.name);
+        log:printInfo("Response received from server: " + location.name);
     }
 
     resource function onError(error err) {
-        io:println("Error reported from server: " + err.message());
+        log:printError("Error reported from server: " + err.message());
     }
 
     resource function onComplete() {
-        io:println("Server completed sending responses.");
+        log:printInfo("Server completed sending responses.");
     }
 };
 

@@ -11,7 +11,7 @@ public function main(string... args) {
     };
     var response = blockingEp->getStartLocation(cab);
     if (response is grpc:Error) {
-        log:printInfo("Error from Connector: " + response.message());
+        log:printError("Error from Connector: " + response.message());
     } else {
         io:println(response);
     }
