@@ -1,7 +1,6 @@
 import ballerina/grpc;
-import ballerina/io;
+import ballerina/log;
 
-boolean isCompleted = false;
 public function main(string... args) {
 
     CabServiceClient ep = new ("http://localhost:9091");
@@ -11,29 +10,25 @@ public function main(string... args) {
     };
     grpc:Error? result = ep->getCurrentLocation(cab, CabServiceMessageListener);
     if (result is grpc:Error) {
-        io:println("Error from Connector: " + result.message());
+        log:printError("Error from Connector: " + result.message());
     } else {
-        io:println("Connected successfully");
+        log:printInfo("Connected successfully");
     }
-
-    while (!isCompleted) {}
-    io:println("Client got response successfully.");
 
 }
 
 service CabServiceMessageListener = service {
 
     resource function onMessage(Location location) {
-        io:println("Response received from server: " + location.name);
+        log:printInfo("Response received from server: " + location.name);
     }
 
     resource function onError(error err) {
-        io:println("Error from Connector: " + err.message());
+        log:printError("Error from Connector: " + err.message());
     }
 
     resource function onComplete() {
-        isCompleted = true;
-        io:println("Server Complete Sending Responses.");
+        log:printInfo("Server Complete Sending Responses.");
     }
 };
 

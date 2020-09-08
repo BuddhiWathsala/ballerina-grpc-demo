@@ -15,7 +15,7 @@ service CabService on ep {
                 if (err is grpc:Error) {
                     log:printError("Error from Connector: " + err.message());
                 } else {
-                    log:printInfo("Send location: " + location.name);
+                    log:printInfo("Sent location: " + location.name);
                 }
             }
 

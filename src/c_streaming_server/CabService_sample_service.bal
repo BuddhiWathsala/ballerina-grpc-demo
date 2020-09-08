@@ -41,7 +41,7 @@ public type TripState record {|
 
 public type State "COMPLETED"|"IN_PROGRESS";
 public const State STATE_COMPLETED = "COMPLETED";
-const State STATE_IN_PROGRESS = "IN_PROGRESS";
+public const State STATE_IN_PROGRESS = "IN_PROGRESS";
 
 public type Location record {|
     string name = "";

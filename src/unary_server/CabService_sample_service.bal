@@ -17,7 +17,7 @@ service CabService on ep {
 
             grpc:Error? result = caller->complete();
             if (result is grpc:Error) {
-                log:printError("Error in sending completed notification to caller", err = result);
+                log:printError("Error in sending completed notification to the caller", err = result);
             }
         } else {
             grpc:Error? result = caller->sendError(
@@ -25,7 +25,7 @@ service CabService on ep {
                 "Incorrectly specified cab number: " + cabDetails.cabNumber
             );
             if (result is grpc:Error) {
-                log:printError("Error in sending completed notification to caller", err = result);
+                log:printError("Error in sending error notification to the caller", err = result);
             }
         }
     }
